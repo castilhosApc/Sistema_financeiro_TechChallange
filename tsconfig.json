@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/pages/index.js", "app/components/ui/Button.jsx", "app/components/ui/Card.jsx", "app/components/ui/Input.jsx", "app/components/ui/Modal.jsx", "app/components/transactions/TransactionItem.jsx", "app/components/transactions/BalanceDisplay.jsx", "app/components/layout/Sidebar.jsx", "app/components/layout/Header.jsx"],
   "exclude": ["node_modules"]
 }
