@@ -1,60 +1,79 @@
 "use client";
 
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
+import ModalPortal from './ModalPortal';
 
-const Modal = ({ 
-  isOpen, 
-  onClose, 
-  title, 
-  children,
-  className = ''
-}) => {
+const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
   useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === 'Escape') onClose();
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
-    
+
     if (isOpen) {
-      document.addEventListener('keydown', handleEsc);
+      document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
     }
-    
+
     return () => {
-      document.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'auto';
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
     };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+  const sizeClasses = {
+    sm: 'max-w-md',
+    md: 'max-w-lg',
+    lg: 'max-w-4xl',
+    xl: 'max-w-6xl'
+  };
+
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      {/* Backdrop */}
       <div 
-        className="fixed inset-0" 
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
-        aria-hidden="true"
       />
       
-      <div className={`bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md z-50 border border-gray-200 dark:border-gray-700 ${className}`}>
-        <div className="border-b border-gray-100 dark:border-gray-700 p-6 flex justify-between items-center">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
-          <button 
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 rounded-full p-1 transition-colors"
-            aria-label="Fechar"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-        
-        <div className="p-6">
-          {children}
+      {/* Modal */}
+      <div className={`relative w-full ${sizeClasses[size]} max-h-[90vh] overflow-y-auto`}>
+        <div className="glass rounded-2xl shadow-2xl border border-white/20">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-white/20">
+            <h2 className="text-xl font-bold text-white">{title}</h2>
+            <button
+              onClick={onClose}
+              className="text-white/70 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/10"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          {/* Content */}
+          <div className="p-6">
+            {children}
+          </div>
         </div>
       </div>
     </div>
   );
+
+  return <ModalPortal>{modalContent}</ModalPortal>;
+};
+
+Modal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
+  size: PropTypes.oneOf(['sm', 'md', 'lg', 'xl'])
 };
 
 export default Modal;

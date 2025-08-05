@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String   // Senha criptografada
+  avatar    String?
+  role      String   @default("user")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos
+  transactions Transaction[]
+  contacts     Contact[]
+  sessions     Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("sessions")
+  @@index([token])
+  @@index([userId])
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  type        String   // DEPOSIT, WITHDRAW, TRANSFER
+  amount      Float
+  description String?
+  category    String   @default("Outros")
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacionamentos
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contactId String?
+  contact   Contact? @relation(fields: [contactId], references: [id])
+
+  @@map("transactions")
+  @@index([userId])
+  @@index([date])
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  avatar    String?
+  
+  // Informações bancárias
+  pixKey    String?  // Chave PIX
+  pixKeyType String? // CPF, CNPJ, EMAIL, PHONE, RANDOM
+  bankName  String?  // Nome do banco
+  accountType String? // PESSOA_FISICA, PESSOA_JURIDICA
+  accountNumber String? // Número da conta
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions  Transaction[]
+
+  @@map("contacts")
+  @@index([userId])
+  @@unique([userId, name])
+  @@index([pixKey]) // Índice para busca por chave PIX
+}

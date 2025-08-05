@@ -4,30 +4,50 @@ import PropTypes from 'prop-types';
 const Button = ({ 
   children, 
   variant = 'primary', 
-  size = 'md',
-  className = '',
-  ...props 
+  size = 'md', 
+  className = '', 
+  onClick, 
+  disabled = false,
+  type = 'button'
 }) => {
-  const baseClasses = "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 shadow-sm hover:shadow-md";
-  
-  const variants = {
-    primary: "gradient-primary text-white hover:scale-105 focus:ring-primary-400/50",
-    secondary: "bg-secondary-100 text-secondary-700 hover:bg-secondary-200 focus:ring-secondary-400/50 dark:bg-secondary-800 dark:text-secondary-200 dark:hover:bg-secondary-700",
-    success: "bg-success-500 text-white hover:bg-success-600 focus:ring-success-400/50",
-    danger: "bg-danger-500 text-white hover:bg-danger-600 focus:ring-danger-400/50",
-    accent: "bg-accent-500 text-white hover:bg-accent-600 focus:ring-accent-400/50",
+  const getVariantClasses = () => {
+    switch (variant) {
+      case 'primary':
+        return 'bg-primary-custom hover:bg-primary-custom/90 text-white shadow-lg hover:shadow-xl';
+      case 'secondary':
+        return 'bg-secondary-custom hover:bg-secondary-custom/90 text-primary-custom border border-primary-custom/20';
+      case 'outline':
+        return 'bg-transparent border-2 border-primary-custom text-primary-custom hover:bg-primary-custom hover:text-white';
+      case 'ghost':
+        return 'bg-transparent text-primary-custom hover:bg-primary-custom/10';
+      default:
+        return 'bg-primary-custom hover:bg-primary-custom/90 text-white';
+    }
   };
-  
-  const sizes = {
-    sm: "py-2 px-4 text-sm",
-    md: "py-3 px-6 text-base",
-    lg: "py-4 px-8 text-lg",
+
+  const getSizeClasses = () => {
+    switch (size) {
+      case 'sm':
+        return 'px-3 py-1.5 text-sm';
+      case 'md':
+        return 'px-4 py-2 text-base';
+      case 'lg':
+        return 'px-6 py-3 text-lg';
+      default:
+        return 'px-4 py-2 text-base';
+    }
   };
+
+  const baseClasses = 'font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-custom/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  
+  const classes = `${baseClasses} ${getVariantClasses()} ${getSizeClasses()} ${className}`;
 
   return (
     <button
-      className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
-      {...props}
+      type={type}
+      className={classes}
+      onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>
@@ -35,8 +55,13 @@ const Button = ({
 };
 
 Button.propTypes = {
-  variant: PropTypes.oneOf(['primary', 'secondary', 'success', 'danger', 'accent']),
+  children: PropTypes.node.isRequired,
+  variant: PropTypes.oneOf(['primary', 'secondary', 'outline', 'ghost']),
   size: PropTypes.oneOf(['sm', 'md', 'lg']),
+  className: PropTypes.string,
+  onClick: PropTypes.func,
+  disabled: PropTypes.bool,
+  type: PropTypes.oneOf(['button', 'submit', 'reset'])
 };
 
 export default Button;

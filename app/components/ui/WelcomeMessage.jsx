@@ -1,20 +1,33 @@
-import React from 'react';
-import { formatDate } from '../../utils/formatters';
-import { getUserName } from '../../config/user';
+"use client";
 
-const WelcomeMessage = ({ userName }) => {
-  const today = new Date();
-  const currentDate = formatDate(today.toISOString());
-  
-  const getGreeting = () => {
-    const hour = today.getHours();
-    if (hour < 12) return "Bom dia";
-    if (hour < 18) return "Boa tarde";
-    return "Boa noite";
-  };
+import React, { useState, useEffect } from 'react';
 
-  // Usa o nome do usuário do objeto centralizado se não for passado como prop
-  const displayName = userName || getUserName();
+const WelcomeMessage = ({ user }) => {
+  const [greeting, setGreeting] = useState('');
+  const [currentDate, setCurrentDate] = useState('');
+
+  useEffect(() => {
+    const getGreeting = () => {
+      const hour = new Date().getHours();
+      if (hour < 12) return 'Bom dia';
+      if (hour < 18) return 'Boa tarde';
+      return 'Boa noite';
+    };
+
+    const formatDate = () => {
+      return new Date().toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    };
+
+    setGreeting(getGreeting());
+    setCurrentDate(formatDate());
+  }, []);
+
+  const userName = user?.name || 'Usuário';
 
   return (
     <div className="gradient-primary text-white rounded-2xl p-8 mb-6 shadow-xl">
@@ -24,10 +37,10 @@ const WelcomeMessage = ({ userName }) => {
         </div>
         <div>
           <h1 className="text-3xl font-bold">
-            {getGreeting()}, {displayName}!
+            {greeting || 'Olá'}, {userName}!
           </h1>
           <p className="text-white/90 text-lg">
-            Hoje é {currentDate}
+            {currentDate || 'Carregando...'}
           </p>
         </div>
       </div>

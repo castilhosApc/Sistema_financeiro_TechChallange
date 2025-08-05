@@ -1,44 +1,71 @@
 "use client";
 
-import React from "react";
-import Button from "../ui/Button";
-import ThemeToggle from "../ui/ThemeToggle";
-import { getUserName, getUserEmail } from "../../config/user";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Button from '../ui/Button';
+import ThemeToggle from '../ui/ThemeToggle';
+import { logout } from '../../actions/auth';
+import { useNotification } from '../providers/NotificationProvider';
+import { useRouter } from 'next/navigation';
 
-const Header = () => {
+const Header = ({ user }) => {
+  const { showNotification } = useNotification();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      showNotification('Logout realizado com sucesso!', 'success');
+      router.push('/auth');
+    } catch (error) {
+      showNotification('Erro ao fazer logout: ' + error.message, 'error');
+    }
+  };
+
   return (
-    <header className="gradient-primary shadow-lg">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <div className="flex items-center space-x-3">
-          <div className="glass rounded-xl w-16 h-16 flex items-center justify-center">
-            <span className="text-white font-bold text-2xl">$</span>
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-white">Sistema Bancário</h1>
-            <p className="text-white/80 text-sm">Fiap</p>
-          </div>
-        </div>
-        
-        
-        <div className="flex items-center space-x-4">
-          <ThemeToggle />
-          <div className="glass rounded-lg p-3">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-white/30 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-medium">
-                  {getUserName().charAt(0)}
-                </span>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">{getUserName()}</p>
-                <p className="text-xs text-white/70">{getUserEmail()}</p>
-              </div>
+    <header className="bg-white/10 backdrop-blur-lg border-b border-white/20">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="text-2xl font-bold text-white">
+              💰 Sistema Bancário
             </div>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            {user && (
+              <div className="flex items-center space-x-3">
+                <div className="text-right">
+                  <p className="text-sm text-white font-medium">{user.name}</p>
+                  <p className="text-xs text-gray-300">{user.email}</p>
+                </div>
+                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-medium">
+                    {user.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              </div>
+            )}
+            
+            <ThemeToggle />
+            
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              size="sm"
+              className="text-red-400 hover:text-red-300 border-red-400 hover:border-red-300"
+            >
+              Sair
+            </Button>
           </div>
         </div>
       </div>
     </header>
   );
+};
+
+Header.propTypes = {
+  user: PropTypes.object.isRequired
 };
 
 export default Header;

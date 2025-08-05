@@ -2,100 +2,106 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --primary: #0ea5e9;
-  --primary-dark: #0369a1;
-  --secondary: #f8fafc;
-  --secondary-dark: #0f172a;
-  --accent: #eab308;
-  --success: #22c55e;
-  --danger: #ef4444;
+/* Cores personalizadas do design antigo */
+@layer components {
+  .gradient-primary {
+    @apply bg-gradient-to-r from-[#004d61] to-[#006d8f];
+  }
+  
+  .gradient-secondary {
+    @apply bg-gradient-to-r from-[#E4EDE3] to-[#f5f5f5];
+  }
+  
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+  
+  .text-primary-custom {
+    @apply text-[#004d61];
+  }
+  
+  .text-secondary-custom {
+    @apply text-[#E4EDE3];
+  }
+  
+  .bg-primary-custom {
+    @apply bg-[#004d61];
+  }
+  
+  .bg-secondary-custom {
+    @apply bg-[#E4EDE3];
+  }
+  
+  .bg-accent-custom {
+    @apply bg-[#f5f5f5];
+  }
+  
+  /* Modo escuro */
+  .dark .gradient-primary {
+    @apply bg-gradient-to-r from-[#1a3a4a] to-[#2d5a6b];
+  }
+  
+  .dark .gradient-secondary {
+    @apply bg-gradient-to-r from-[#2d3a2d] to-[#1a1a1a];
+  }
+  
+  .dark .glass {
+    @apply bg-black/20 backdrop-blur-md border border-white/10;
+  }
+  
+  .dark .text-primary-custom {
+    @apply text-[#4a9bb8];
+  }
+  
+  .dark .text-secondary-custom {
+    @apply text-[#a8c5a7];
+  }
+  
+  .dark .bg-primary-custom {
+    @apply bg-[#1a3a4a];
+  }
+  
+  .dark .bg-secondary-custom {
+    @apply bg-[#2d3a2d];
+  }
+  
+  .dark .bg-accent-custom {
+    @apply bg-[#2a2a2a];
+  }
 }
 
-.dark {
-  --primary: #0ea5e9;
-  --primary-dark: #0369a1;
-  --secondary: #0f172a;
-  --secondary-dark: #020617;
-  --accent: #facc15;
-  --success: #22c55e;
-  --danger: #ef4444;
+/* Estilos para selects e dropdowns no modal */
+@layer utilities {
+  /* Garantir que dropdowns apareçam acima do modal */
+  .modal-dropdown {
+    z-index: 10001 !important;
+  }
+  
+  /* Estilos para selects nativos no modal */
+  select option {
+    background-color: #1f2937 !important;
+    color: white !important;
+  }
+  
+  /* Estilos para selects customizados */
+  .custom-select-dropdown {
+    background-color: #1f2937 !important;
+    border-color: #4b5563 !important;
+    color: white !important;
+  }
+  
+  .custom-select-option {
+    background-color: #1f2937 !important;
+    color: white !important;
+  }
+  
+  .custom-select-option:hover {
+    background-color: #374151 !important;
+  }
 }
 
-body {
-  @apply transition-colors duration-200;
-}
-
-/* Classes utilitárias para modo escuro */
-.dark .bg-secondary {
-  @apply bg-secondary-900;
-}
-
-.dark .text-gray-800 {
-  @apply text-gray-100;
-}
-
-.dark .text-gray-900 {
-  @apply text-white;
-}
-
-.dark .border-gray-200 {
-  @apply border-gray-700;
-}
-
-.dark .border-gray-300 {
-  @apply border-gray-600;
-}
-
-.dark .bg-white {
-  @apply bg-secondary-800;
-}
-
-.dark .hover\:bg-gray-50:hover {
-  @apply hover:bg-secondary-700;
-}
-
-.dark .divide-gray-200 > * + * {
-  @apply border-secondary-700;
-}
-
-.dark .shadow-sm {
-  @apply shadow-secondary-900/50;
-}
-
-.dark .shadow-lg {
-  @apply shadow-secondary-900/50;
-}
-
-.dark .shadow-xl {
-  @apply shadow-secondary-900/50;
-}
-
-.dark .shadow-2xl {
-  @apply shadow-secondary-900/50;
-}
-
-/* Transições suaves para mudança de tema */
-* {
-  @apply transition-colors duration-200;
-}
-
-/* Estilos personalizados para melhorar a aparência */
-.transaction-item-hover {
-  transition: all 0.2s ease-in-out;
-}
-
-.transaction-item-hover:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Animações suaves */
-.fade-in {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
+/* Animações */
+@keyframes fade-in {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -106,27 +112,27 @@ body {
   }
 }
 
-/* Gradientes sofisticados */
-.gradient-primary {
-  background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
-.gradient-secondary {
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+.fade-in {
+  animation: fade-in 0.5s ease-out;
 }
 
-.dark .gradient-secondary {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+.slide-in {
+  animation: slide-in 0.3s ease-out;
 }
 
-/* Efeitos de glassmorphism */
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+.transaction-item-hover {
+  @apply transition-all duration-300 ease-in-out;
 }
 
-.dark .glass {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.transaction-item-hover:hover {
+  @apply transform scale-[1.02] shadow-lg;
 }

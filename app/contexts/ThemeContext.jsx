@@ -7,46 +7,57 @@ const ThemeContext = createContext();
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error('useTheme deve ser usado dentro de um ThemeProvider');
   }
   return context;
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Carregar preferência do usuário do localStorage
   useEffect(() => {
+    setMounted(true);
+    
+    // Verificar preferência salva no localStorage
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      setIsDarkMode(savedTheme === 'dark');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+    
+    setIsDark(shouldBeDark);
+    
+    // Aplicar classe ao documento
+    if (shouldBeDark) {
+      document.documentElement.classList.add('dark');
     } else {
-      // Verificar preferência do sistema
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setIsDarkMode(prefersDark);
+      document.documentElement.classList.remove('dark');
     }
   }, []);
 
-  // Aplicar tema ao documento
-  useEffect(() => {
-    const root = document.documentElement;
-    if (isDarkMode) {
-      root.classList.add('dark');
+  const toggleTheme = () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    
+    if (newTheme) {
+      document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
     } else {
-      root.classList.remove('dark');
+      document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
-  }, [isDarkMode]);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
   };
 
   const value = {
-    isDarkMode,
-    toggleTheme
+    isDark,
+    toggleTheme,
+    mounted
   };
+
+  // Não renderizar nada até estar montado para evitar hidratação
+  if (!mounted) {
+    return <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">{children}</div>;
+  }
 
   return (
     <ThemeContext.Provider value={value}>
