@@ -23,11 +23,11 @@ const Header = ({ user }) => {
   };
 
   return (
-    <header className="bg-white/10 backdrop-blur-lg border-b border-white/20">
+    <header className="bg-white/90 dark:bg-white/10 backdrop-blur-lg border-b border-gray-200/50 dark:border-white/20 shadow-sm">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="text-2xl font-bold text-white">
+            <div className="text-2xl font-bold text-gray-800 dark:text-white">
               💰 Sistema Bancário
             </div>
           </div>
@@ -36,8 +36,8 @@ const Header = ({ user }) => {
             {user && (
               <div className="flex items-center space-x-3">
                 <div className="text-right">
-                  <p className="text-sm text-white font-medium">{user.name}</p>
-                  <p className="text-xs text-gray-300">{user.email}</p>
+                  <p className="text-sm text-gray-800 dark:text-white font-medium">{user.name}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-300">{user.email}</p>
                 </div>
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                   <span className="text-white text-sm font-medium">
@@ -53,7 +53,7 @@ const Header = ({ user }) => {
               onClick={handleLogout}
               variant="outline"
               size="sm"
-              className="text-red-400 hover:text-red-300 border-red-400 hover:border-red-300"
+              className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 border-red-600 hover:border-red-700 dark:border-red-400 dark:hover:border-red-300"
             >
               Sair
             </Button>

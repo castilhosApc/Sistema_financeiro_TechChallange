@@ -54,7 +54,7 @@ const ContactSearch = ({ onContactSelect, onCancel }) => {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-white mb-2">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
           Buscar Contato
         </label>
         <input
@@ -62,24 +62,24 @@ const ContactSearch = ({ onContactSelect, onCancel }) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Digite nome, PIX, email ou telefone..."
-          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-full px-4 py-3 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
         />
       </div>
 
       {loading && (
         <div className="text-center py-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
-          <p className="text-white/70 mt-2">Buscando...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-600 dark:border-white mx-auto"></div>
+          <p className="text-gray-600 dark:text-white/70 mt-2">Buscando...</p>
         </div>
       )}
 
       {searchResults.length > 0 && !loading && (
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-white/70">Contatos Encontrados</h3>
+          <h3 className="text-sm font-medium text-gray-700 dark:text-white/70">Contatos Encontrados</h3>
           {searchResults.map(contact => (
             <div
               key={contact.id}
-              className="bg-white/10 border border-white/20 rounded-lg p-3 hover:bg-white/20 transition-colors cursor-pointer"
+              className="bg-gray-50 dark:bg-white/10 border border-gray-200 dark:border-white/20 rounded-lg p-3 hover:bg-gray-100 dark:hover:bg-white/20 transition-colors cursor-pointer"
               onClick={() => handleContactSelect(contact)}
             >
               <div className="flex items-center space-x-3">
@@ -89,53 +89,44 @@ const ContactSearch = ({ onContactSelect, onCancel }) => {
                   className="w-10 h-10 rounded-full"
                 />
                 <div className="flex-1">
-                  <p className="font-medium text-white">{contact.name}</p>
-                  <p className="text-sm text-gray-300">
+                  <p className="font-medium text-gray-900 dark:text-white">{contact.name}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
                     {contact.pixKey && `${contact.pixKeyType}: ${contact.pixKey}`}
                     {!contact.pixKey && contact.phone && `Tel: ${contact.phone}`}
                     {!contact.pixKey && !contact.phone && contact.email && `Email: ${contact.email}`}
                   </p>
                   {contact.bankName && (
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {contact.bankName} - {contact.accountNumber}
                     </p>
                   )}
                 </div>
-                <Button
-                  variant="primary"
-                  size="sm"
-                >
-                  Selecionar
-                </Button>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {searchTerm.trim().length >= 2 && searchResults.length === 0 && !loading && (
-        <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4">
-          <h3 className="font-semibold text-blue-400 mb-2">Contato não encontrado</h3>
-          <p className="text-sm text-gray-300 mb-3">
-            Deseja cadastrar um novo contato?
-          </p>
-          <NewContactForm
-            searchTerm={searchTerm}
-            onSubmit={handleCreateNewContact}
-            onCancel={() => setShowNewContactForm(false)}
-          />
+      {searchResults.length === 0 && !loading && searchTerm.trim().length >= 2 && (
+        <div className="text-center py-4">
+          <p className="text-gray-600 dark:text-gray-300 mb-4">Nenhum contato encontrado</p>
+          <Button
+            onClick={() => setShowNewContactForm(true)}
+            variant="primary"
+            size="sm"
+          >
+            Cadastrar Novo Contato
+          </Button>
         </div>
       )}
 
-      <div className="flex space-x-2">
-        <Button
-          onClick={onCancel}
-          variant="outline"
-          size="sm"
-        >
-          Cancelar
-        </Button>
-      </div>
+      {showNewContactForm && (
+        <NewContactForm
+          searchTerm={searchTerm}
+          onSubmit={handleCreateNewContact}
+          onCancel={() => setShowNewContactForm(false)}
+        />
+      )}
     </div>
   );
 };
@@ -234,7 +225,7 @@ const NewContactForm = ({ searchTerm, onSubmit, onCancel }) => {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-white mb-1">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
           Nome *
         </label>
         <input
@@ -242,45 +233,45 @@ const NewContactForm = ({ searchTerm, onSubmit, onCancel }) => {
           value={formData.name}
           onChange={(e) => handleChange('name', e.target.value)}
           required
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
           placeholder="Nome do contato"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white mb-1">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
           E-mail
         </label>
         <input
           type="email"
           value={formData.email}
           onChange={(e) => handleChange('email', e.target.value)}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
           placeholder="email@exemplo.com"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white mb-1">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
           Telefone
         </label>
         <input
           type="tel"
           value={formData.phone}
           onChange={(e) => handleChange('phone', e.target.value)}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
           placeholder="(11) 99999-9999"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white mb-1">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
           Tipo de Pessoa
         </label>
         <select
           value={formData.accountType}
           onChange={(e) => handleChange('accountType', e.target.value)}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
         >
           {accountTypes.map(type => (
             <option key={type.value} value={type.value}>
@@ -291,13 +282,13 @@ const NewContactForm = ({ searchTerm, onSubmit, onCancel }) => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white mb-1">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
           Banco
         </label>
         <select
           value={formData.bankName}
           onChange={(e) => handleChange('bankName', e.target.value)}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
         >
           <option value="">Selecione um banco</option>
           {banks.map(bank => (
@@ -309,26 +300,26 @@ const NewContactForm = ({ searchTerm, onSubmit, onCancel }) => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white mb-1">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
           Número da Conta
         </label>
         <input
           type="text"
           value={formData.accountNumber}
           onChange={(e) => handleChange('accountNumber', e.target.value)}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
           placeholder="12345-6"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white mb-1">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
           Tipo de Chave PIX
         </label>
         <select
           value={formData.pixKeyType}
           onChange={(e) => handleChange('pixKeyType', e.target.value)}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
         >
           {pixKeyTypes.map(type => (
             <option key={type.value} value={type.value}>
@@ -339,14 +330,14 @@ const NewContactForm = ({ searchTerm, onSubmit, onCancel }) => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white mb-1">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
           Chave PIX
         </label>
         <input
           type="text"
           value={formData.pixKey}
           onChange={(e) => handleChange('pixKey', e.target.value)}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
           placeholder="Digite a chave PIX"
         />
       </div>

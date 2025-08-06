@@ -31,10 +31,10 @@ const ConfirmModal = ({
           <div className="text-6xl mb-4">
             {type === 'danger' ? '⚠️' : '❓'}
           </div>
-          <h3 className="text-lg font-semibold text-primary-custom dark:text-white mb-2">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">
             {title}
           </h3>
-          <p className="text-secondary-custom dark:text-secondary-400 mb-6">
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
             {message}
           </p>
           
@@ -50,7 +50,7 @@ const ConfirmModal = ({
             <Button
               onClick={handleConfirm}
               variant={type === 'danger' ? 'outline' : 'primary'}
-              className={`flex-1 ${type === 'danger' ? 'text-red-600 hover:text-red-700 border-red-600 hover:border-red-700' : ''}`}
+              className={`flex-1 ${type === 'danger' ? 'text-red-700 hover:text-red-800 border-red-700 hover:border-red-800 dark:text-red-400 dark:hover:text-red-300 dark:border-red-400 dark:hover:border-red-300' : ''}`}
             >
               {confirmText}
             </Button>

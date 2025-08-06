@@ -61,14 +61,14 @@ const PixContactSearch = ({ onContactSelect, onCancel }) => {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-white mb-2">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
           Buscar por Chave PIX
         </label>
         <div className="flex space-x-2">
           <select
             value={pixKeyType}
             onChange={(e) => setPixKeyType(e.target.value)}
-            className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+            className="px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
           >
             {pixKeyTypes.map(type => (
               <option key={type.value} value={type.value}>
@@ -81,7 +81,7 @@ const PixContactSearch = ({ onContactSelect, onCancel }) => {
             value={pixKey}
             onChange={(e) => setPixKey(e.target.value)}
             placeholder="Digite a chave PIX"
-            className="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+            className="flex-1 px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
           />
           <Button
             onClick={handleSearch}
@@ -95,8 +95,8 @@ const PixContactSearch = ({ onContactSelect, onCancel }) => {
       </div>
 
       {foundContact && (
-        <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-4">
-          <h3 className="font-semibold text-green-400 mb-2">Contato Encontrado</h3>
+        <div className="bg-green-100 dark:bg-green-500/20 border border-green-200 dark:border-green-500/30 rounded-lg p-4">
+          <h3 className="font-semibold text-green-800 dark:text-green-400 mb-2">Contato Encontrado</h3>
           <div className="flex items-center space-x-3">
             <img
               src={foundContact.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'}
@@ -104,8 +104,8 @@ const PixContactSearch = ({ onContactSelect, onCancel }) => {
               className="w-10 h-10 rounded-full"
             />
             <div className="flex-1">
-              <p className="font-medium text-white">{foundContact.name}</p>
-              <p className="text-sm text-gray-300">
+              <p className="font-medium text-gray-900 dark:text-white">{foundContact.name}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 {foundContact.pixKeyType}: {foundContact.pixKey}
               </p>
             </div>
@@ -121,9 +121,9 @@ const PixContactSearch = ({ onContactSelect, onCancel }) => {
       )}
 
       {showNewContactForm && !foundContact && (
-        <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4">
-          <h3 className="font-semibold text-blue-400 mb-2">Contato não encontrado</h3>
-          <p className="text-sm text-gray-300 mb-3">
+        <div className="bg-blue-100 dark:bg-blue-500/20 border border-blue-200 dark:border-blue-500/30 rounded-lg p-4">
+          <h3 className="font-semibold text-blue-800 dark:text-blue-400 mb-2">Contato não encontrado</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
             Deseja cadastrar um novo contato com esta chave PIX?
           </p>
           <NewContactForm
@@ -173,7 +173,7 @@ const NewContactForm = ({ pixKey, pixKeyType, onSubmit, onCancel }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <div>
-        <label className="block text-sm font-medium text-white mb-1">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
           Nome *
         </label>
         <input
@@ -181,33 +181,33 @@ const NewContactForm = ({ pixKey, pixKeyType, onSubmit, onCancel }) => {
           value={formData.name}
           onChange={(e) => handleChange('name', e.target.value)}
           required
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
           placeholder="Nome do contato"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white mb-1">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
           E-mail
         </label>
         <input
           type="email"
           value={formData.email}
           onChange={(e) => handleChange('email', e.target.value)}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
           placeholder="email@exemplo.com"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-white mb-1">
+        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
           Telefone
         </label>
         <input
           type="tel"
           value={formData.phone}
           onChange={(e) => handleChange('phone', e.target.value)}
-          className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
           placeholder="(11) 99999-9999"
         />
       </div>

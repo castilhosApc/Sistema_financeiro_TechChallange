@@ -30,9 +30,9 @@ const WelcomeMessage = ({ user }) => {
   const userName = user?.name || 'Usuário';
 
   return (
-    <div className="gradient-primary text-white rounded-2xl p-8 mb-6 shadow-xl">
+    <div className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-800 dark:to-purple-800 text-white rounded-2xl p-8 mb-6 shadow-xl">
       <div className="flex items-center space-x-6 mb-6">
-        <div className="glass rounded-2xl w-16 h-16 flex items-center justify-center">
+        <div className="bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-2xl w-16 h-16 flex items-center justify-center border border-white/30 dark:border-white/20">
           <span className="text-3xl">👋</span>
         </div>
         <div>
@@ -45,7 +45,7 @@ const WelcomeMessage = ({ user }) => {
         </div>
       </div>
       
-      <div className="glass rounded-xl p-6">
+      <div className="bg-white/20 dark:bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/30 dark:border-white/20">
         <p className="text-white/90 text-base leading-relaxed">
           Gerencie suas finanças de forma simples e eficiente. 
           Acompanhe seus gastos, receitas e mantenha o controle total do seu dinheiro.

@@ -21,10 +21,10 @@ const BalanceDisplay = ({ stats }) => {
   const totalIncome = stats?.totalIncome || 0;
   const totalExpenses = stats?.totalExpenses || 0;
   
-  const balanceClass = balance >= 0 ? 'text-green-400' : 'text-red-400';
+  const balanceClass = balance >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
 
   return (
-    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl p-8 shadow-xl">
+    <div className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 text-white rounded-2xl p-8 shadow-xl">
       <div className="mb-8">
         <h2 className="text-sm font-medium text-white/90 mb-3">Saldo da Conta</h2>
         <div className={`text-5xl font-bold ${balanceClass}`}>
@@ -33,7 +33,7 @@ const BalanceDisplay = ({ stats }) => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+        <div className="bg-white/20 dark:bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/30 dark:border-white/20">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white/80 text-sm font-medium">Receitas</p>
@@ -43,7 +43,7 @@ const BalanceDisplay = ({ stats }) => {
           </div>
         </div>
         
-        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+        <div className="bg-white/20 dark:bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/30 dark:border-white/20">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white/80 text-sm font-medium">Despesas</p>

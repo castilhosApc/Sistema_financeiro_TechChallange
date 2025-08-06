@@ -10,11 +10,11 @@ const ThemeToggle = () => {
   if (!mounted) {
     return (
       <button
-        className="glass rounded-xl p-3 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+        className="bg-white/80 dark:bg-white/10 backdrop-blur-md rounded-xl p-3 transition-all duration-300 hover:scale-105 hover:shadow-lg border border-gray-200/50 dark:border-white/20"
         aria-label="Alternar tema"
       >
         <svg 
-          className="w-6 h-6 text-gray-600" 
+          className="w-6 h-6 text-gray-600 dark:text-gray-400" 
           fill="currentColor" 
           viewBox="0 0 20 20"
         >
@@ -27,12 +27,12 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="glass rounded-xl p-3 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+      className="bg-white/80 dark:bg-white/10 backdrop-blur-md rounded-xl p-3 transition-all duration-300 hover:scale-105 hover:shadow-lg border border-gray-200/50 dark:border-white/20"
       aria-label="Alternar tema"
     >
       {isDark ? (
         <svg 
-          className="w-6 h-6 text-yellow-400" 
+          className="w-6 h-6 text-yellow-500 dark:text-yellow-400" 
           fill="currentColor" 
           viewBox="0 0 20 20"
         >
@@ -44,7 +44,7 @@ const ThemeToggle = () => {
         </svg>
       ) : (
         <svg 
-          className="w-6 h-6 text-gray-600" 
+          className="w-6 h-6 text-gray-600 dark:text-gray-400" 
           fill="currentColor" 
           viewBox="0 0 20 20"
         >

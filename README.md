@@ -22,8 +22,7 @@ Sistema completo de gestão financeira desenvolvido com **Next.js 15**, **Prisma
 
 ### 1. Clone e instale
 ```bash
-git clone https://github.com/castilhosApc/Sistema_financeiro_TechChallange/tree/main
-cd projeto-fiap
+git clone https://github.com/castilhosApc/Sistema_financeiro_TechChallange/
 npm install
 ```
 

@@ -13,15 +13,15 @@ const Button = ({
   const getVariantClasses = () => {
     switch (variant) {
       case 'primary':
-        return 'bg-primary-custom hover:bg-primary-custom/90 text-white shadow-lg hover:shadow-xl';
+        return 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white shadow-lg hover:shadow-xl';
       case 'secondary':
-        return 'bg-secondary-custom hover:bg-secondary-custom/90 text-primary-custom border border-primary-custom/20';
+        return 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-600';
       case 'outline':
-        return 'bg-transparent border-2 border-primary-custom text-primary-custom hover:bg-primary-custom hover:text-white';
+        return 'bg-transparent border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-400 dark:hover:border-gray-500';
       case 'ghost':
-        return 'bg-transparent text-primary-custom hover:bg-primary-custom/10';
+        return 'bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800';
       default:
-        return 'bg-primary-custom hover:bg-primary-custom/90 text-white';
+        return 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white';
     }
   };
 
@@ -38,7 +38,7 @@ const Button = ({
     }
   };
 
-  const baseClasses = 'font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-custom/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseClasses = 'font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
   
   const classes = `${baseClasses} ${getVariantClasses()} ${getSizeClasses()} ${className}`;
 

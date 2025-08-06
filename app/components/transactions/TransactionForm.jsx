@@ -103,7 +103,7 @@ const TransactionForm = ({ transaction, onSubmit, onCancel, contacts = [] }) => 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Tipo de Transação */}
         <div>
-          <label className="block text-sm font-medium text-white mb-2">
+          <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
             Tipo de Transação
           </label>
           <div className="grid grid-cols-2 gap-3">
@@ -112,8 +112,8 @@ const TransactionForm = ({ transaction, onSubmit, onCancel, contacts = [] }) => 
               onClick={() => handleInputChange('type', 'WITHDRAW')}
               className={`p-3 rounded-lg border-2 transition-all ${
                 formData.type === 'WITHDRAW'
-                  ? 'border-red-400 bg-red-400/20 text-red-400'
-                  : 'border-white/20 text-white/70 hover:border-white/40'
+                  ? 'border-red-500 bg-red-500/20 text-red-600 dark:text-red-400'
+                  : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500'
               }`}
             >
               <div className="text-center">
@@ -127,8 +127,8 @@ const TransactionForm = ({ transaction, onSubmit, onCancel, contacts = [] }) => 
               onClick={() => handleInputChange('type', 'DEPOSIT')}
               className={`p-3 rounded-lg border-2 transition-all ${
                 formData.type === 'DEPOSIT'
-                  ? 'border-green-400 bg-green-400/20 text-green-400'
-                  : 'border-white/20 text-white/70 hover:border-white/40'
+                  ? 'border-green-500 bg-green-500/20 text-green-600 dark:text-green-400'
+                  : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500'
               }`}
             >
               <div className="text-center">
@@ -141,11 +141,11 @@ const TransactionForm = ({ transaction, onSubmit, onCancel, contacts = [] }) => 
 
         {/* Valor */}
         <div>
-          <label className="block text-sm font-medium text-white mb-2">
+          <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
             Valor
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/70">
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
               R$
             </span>
             <input
@@ -154,38 +154,38 @@ const TransactionForm = ({ transaction, onSubmit, onCancel, contacts = [] }) => 
               min="0"
               value={formData.amount}
               onChange={(e) => handleInputChange('amount', e.target.value)}
-              className={`w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 ${
-                errors.amount ? 'border-red-400' : ''
+              className={`w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 ${
+                errors.amount ? 'border-red-500 dark:border-red-400' : ''
               }`}
               placeholder="0,00"
             />
           </div>
           {errors.amount && (
-            <p className="text-red-400 text-sm mt-1">{errors.amount}</p>
+            <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.amount}</p>
             )}
         </div>
 
         {/* Data */}
         <div>
-          <label className="block text-sm font-medium text-white mb-2">
+          <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
             Data
           </label>
           <input
             type="date"
             value={formData.date}
             onChange={(e) => handleInputChange('date', e.target.value)}
-            className={`w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50 ${
-              errors.date ? 'border-red-400' : ''
+            className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 ${
+              errors.date ? 'border-red-500 dark:border-red-400' : ''
             }`}
           />
           {errors.date && (
-            <p className="text-red-400 text-sm mt-1">{errors.date}</p>
+            <p className="text-red-500 dark:text-red-400 text-sm mt-1">{errors.date}</p>
           )}
         </div>
 
         {/* Contato */}
         <div>
-          <label className="block text-sm font-medium text-white mb-2">
+          <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
             Contato
           </label>
           
@@ -219,14 +219,14 @@ const TransactionForm = ({ transaction, onSubmit, onCancel, contacts = [] }) => 
 
         {/* Descrição */}
         <div>
-          <label className="block text-sm font-medium text-white mb-2">
+          <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
             Descrição (opcional)
           </label>
           <textarea
             value={formData.description}
             onChange={(e) => handleInputChange('description', e.target.value)}
             rows={3}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
             placeholder="Descrição da transação..."
           />
         </div>

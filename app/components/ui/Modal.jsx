@@ -42,13 +42,13 @@ const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
       
       {/* Modal */}
       <div className={`relative w-full ${sizeClasses[size]} max-h-[90vh] overflow-y-auto`}>
-        <div className="glass rounded-2xl shadow-2xl border border-white/20">
+        <div className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-200/50 dark:border-white/20">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-white/20">
-            <h2 className="text-xl font-bold text-white">{title}</h2>
+          <div className="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-white/20">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white">{title}</h2>
             <button
               onClick={onClose}
-              className="text-white/70 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/10"
+              className="text-gray-600 dark:text-white/70 hover:text-gray-800 dark:hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
