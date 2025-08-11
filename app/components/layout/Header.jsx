@@ -2,6 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import Link from 'next/link';
 import Button from '../ui/Button';
 import ThemeToggle from '../ui/ThemeToggle';
 import { logout } from '../../actions/auth';
@@ -27,9 +28,9 @@ const Header = ({ user }) => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="text-2xl font-bold text-gray-800 dark:text-white">
+            <Link href="/" className="text-2xl font-bold text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
               💰 Sistema Bancário
-            </div>
+            </Link>
           </div>
           
           <div className="flex items-center space-x-4">
@@ -39,11 +40,11 @@ const Header = ({ user }) => {
                   <p className="text-sm text-gray-800 dark:text-white font-medium">{user.name}</p>
                   <p className="text-xs text-gray-600 dark:text-gray-300">{user.email}</p>
                 </div>
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <Link href="/profile" className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors cursor-pointer">
                   <span className="text-white text-sm font-medium">
                     {user.name.charAt(0).toUpperCase()}
                   </span>
-                </div>
+                </Link>
               </div>
             )}
             

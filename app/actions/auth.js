@@ -54,8 +54,20 @@ export async function login(formData) {
       where: { email: email.toLowerCase() }
     });
 
-    if (!user || !user.isActive) {
-      throw new Error('Usuário não encontrado ou inativo');
+    if (!user) {
+      throw new Error('Usuário não encontrado');
+    }
+
+    // Verificar se a conta está inativa
+    if (!user.isActive) {
+      // Verificar se a senha está correta para permitir reativação
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        throw new Error('Senha incorreta');
+      }
+      
+      // Retornar erro específico para conta inativa
+      throw new Error('CONTA_INATIVA');
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
@@ -93,6 +105,74 @@ export async function login(formData) {
   }
 }
 
+// Reativar conta inativa
+export async function reactivateAccount(formData) {
+  try {
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    if (!email || !password) {
+      throw new Error('Email e senha são obrigatórios');
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() }
+    });
+
+    if (!user) {
+      throw new Error('Usuário não encontrado');
+    }
+
+    if (user.isActive) {
+      throw new Error('Conta já está ativa');
+    }
+
+    // Verificar senha
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      throw new Error('Senha incorreta');
+    }
+
+    // Reativar conta
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: { isActive: true }
+    });
+
+    // Criar sessão automaticamente
+    const token = generateToken();
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30);
+
+    await prisma.session.create({
+      data: {
+        token,
+        userId: user.id,
+        expiresAt
+      }
+    });
+
+    // Definir cookie
+    const cookieStore = await cookies();
+    cookieStore.set('session_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: expiresAt
+    });
+
+    revalidatePath('/');
+    return { 
+      success: true, 
+      message: 'Conta reativada com sucesso!',
+      user: { id: user.id, name: user.name, email: user.email, role: user.role } 
+    };
+  } catch (error) {
+    console.error('Erro ao reativar conta:', error);
+    throw new Error(error.message || 'Falha ao reativar conta');
+  }
+}
+
 // Cadastro
 export async function register(formData) {
   try {
@@ -118,8 +198,55 @@ export async function register(formData) {
       where: { email: email.toLowerCase() }
     });
 
-    if (existingUser) {
+    if (existingUser && existingUser.isActive) {
       throw new Error('Este email já está cadastrado');
+    }
+
+    // Se o usuário existe mas está inativo, reativar a conta
+    if (existingUser && !existingUser.isActive) {
+      // Verificar se a senha está correta
+      const isValidPassword = await bcrypt.compare(password, existingUser.password);
+      if (!isValidPassword) {
+        throw new Error('Este email já está cadastrado com uma senha diferente');
+      }
+
+      // Reativar conta existente
+      const updatedUser = await prisma.user.update({
+        where: { id: existingUser.id },
+        data: { 
+          isActive: true,
+          name: name // Atualizar nome se mudou
+        }
+      });
+
+      // Criar sessão automaticamente
+      const token = generateToken();
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 30);
+
+      await prisma.session.create({
+        data: {
+          token,
+          userId: updatedUser.id,
+          expiresAt
+        }
+      });
+
+      // Definir cookie
+      const cookieStore = await cookies();
+      cookieStore.set('session_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        expires: expiresAt
+      });
+
+      revalidatePath('/');
+      return { 
+        success: true, 
+        message: 'Conta reativada com sucesso!',
+        user: { id: updatedUser.id, name: updatedUser.name, email: updatedUser.email, role: updatedUser.role } 
+      };
     }
 
     // Criptografar senha

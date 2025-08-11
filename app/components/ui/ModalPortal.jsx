@@ -15,7 +15,15 @@ const ModalPortal = ({ children }) => {
     return null;
   }
 
-  return createPortal(children, document.body);
+  // Garantir que o portal seja criado no body com as classes corretas
+  const portalContainer = document.body;
+  
+  return createPortal(
+    <div className="dark:bg-gray-900">
+      {children}
+    </div>,
+    portalContainer
+  );
 };
 
 export default ModalPortal; 

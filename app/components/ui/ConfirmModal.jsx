@@ -12,11 +12,50 @@ const ConfirmModal = ({
   message = "Tem certeza que deseja excluir este item?",
   confirmText = "Excluir",
   cancelText = "Cancelar",
-  type = "danger"
+  variant = "danger",
+  isLoading = false,
+  children
 }) => {
-  const handleConfirm = () => {
-    onConfirm();
-    onClose();
+  const handleConfirm = async () => {
+    if (children) {
+      // Se há children (formulário), coletar os dados do formulário
+      // Buscar especificamente o formulário dentro deste modal
+      const modalContent = document.querySelector('[data-modal-content]');
+      let form = null;
+      
+      if (modalContent) {
+        // Buscar por ID específico primeiro
+        form = modalContent.querySelector('#deactivateForm') || 
+               modalContent.querySelector('#passwordForm');
+        
+        // Se não encontrar por ID, buscar qualquer formulário
+        if (!form) {
+          form = modalContent.querySelector('form');
+        }
+      }
+      
+      if (form) {
+        const formData = new FormData(form);
+        await onConfirm(formData);
+      } else {
+        // Tentar executar sem FormData
+        await onConfirm();
+      }
+    } else {
+      // Confirmação simples sem formulário
+      await onConfirm();
+    }
+  };
+
+  const getVariantStyles = () => {
+    switch (variant) {
+      case 'destructive':
+        return 'text-red-700 hover:text-red-800 border-red-700 hover:border-red-800 dark:text-red-400 dark:hover:text-red-300 dark:border-red-400 dark:hover:border-red-300 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30';
+      case 'danger':
+        return 'text-red-700 hover:text-red-800 border-red-700 hover:border-red-800 dark:text-red-400 dark:hover:text-red-300 dark:border-red-400 dark:hover:border-red-300';
+      default:
+        return '';
+    }
   };
 
   return (
@@ -26,36 +65,65 @@ const ConfirmModal = ({
       title={title}
       size="sm"
     >
-      <div className="p-6">
-        <div className="text-center">
-          <div className="text-6xl mb-4">
-            {type === 'danger' ? '⚠️' : '❓'}
+      <div className="bg-white dark:bg-gray-800">
+        {children ? (
+          // Render children if provided (for forms)
+          <div className="bg-white dark:bg-gray-800" data-modal-content>
+            {children}
+            <div className="flex space-x-3 mt-6">
+              <Button
+                onClick={onClose}
+                variant="outline"
+                className="flex-1"
+                disabled={isLoading}
+              >
+                {cancelText}
+              </Button>
+              
+              <Button
+                onClick={handleConfirm}
+                variant={variant === 'destructive' ? 'destructive' : 'primary'}
+                className={`flex-1 ${getVariantStyles()}`}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Processando...' : confirmText}
+              </Button>
+            </div>
           </div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">
-            {title}
-          </h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
-            {message}
-          </p>
-          
-          <div className="flex space-x-3">
-            <Button
-              onClick={onClose}
-              variant="outline"
-              className="flex-1"
-            >
-              {cancelText}
-            </Button>
+        ) : (
+          // Default confirmation dialog
+          <div className="text-center bg-white dark:bg-gray-800" data-modal-content>
+            <div className="text-6xl mb-4">
+              {variant === 'destructive' ? '⚠️' : '❓'}
+            </div>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">
+              {title}
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
+              {message}
+            </p>
             
-            <Button
-              onClick={handleConfirm}
-              variant={type === 'danger' ? 'outline' : 'primary'}
-              className={`flex-1 ${type === 'danger' ? 'text-red-700 hover:text-red-800 border-red-700 hover:border-red-800 dark:text-red-400 dark:hover:text-red-300 dark:border-red-400 dark:hover:border-red-300' : ''}`}
-            >
-              {confirmText}
-            </Button>
+            <div className="flex space-x-3">
+              <Button
+                onClick={onClose}
+                variant="outline"
+                className="flex-1"
+                disabled={isLoading}
+              >
+                {cancelText}
+              </Button>
+              
+              <Button
+                onClick={handleConfirm}
+                variant={variant === 'destructive' ? 'destructive' : 'primary'}
+                className={`flex-1 ${getVariantStyles()}`}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Processando...' : confirmText}
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </Modal>
   );

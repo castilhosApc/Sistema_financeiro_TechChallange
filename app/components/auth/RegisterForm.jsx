@@ -20,7 +20,11 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
       const result = await register(formData);
       
       if (result.success) {
-        showNotification('Cadastro realizado com sucesso!', 'success');
+        if (result.message && result.message.includes('reativada')) {
+          showNotification('Conta reativada com sucesso!', 'success');
+        } else {
+          showNotification('Cadastro realizado com sucesso!', 'success');
+        }
         onSuccess(result.user);
       }
     } catch (error) {
@@ -130,6 +134,13 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }) => {
           >
             Faça login
           </button>
+        </p>
+      </div>
+
+      <div className="mt-6 p-4 bg-blue-100 dark:bg-blue-500/20 border border-blue-200 dark:border-blue-500/30 rounded-lg">
+        <h3 className="text-sm font-medium text-blue-800 dark:text-blue-400 mb-2">ℹ️ Informação</h3>
+        <p className="text-xs text-gray-700 dark:text-gray-300">
+          Se você já possui uma conta que foi desativada, pode reativá-la usando o mesmo email e senha durante o cadastro.
         </p>
       </div>
     </div>
