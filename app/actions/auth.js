@@ -189,8 +189,25 @@ export async function register(formData) {
       throw new Error('As senhas não coincidem');
     }
 
-    if (password.length < 6) {
-      throw new Error('A senha deve ter pelo menos 6 caracteres');
+    // Validações mais robustas de senha
+    if (password.length < 8) {
+      throw new Error('A senha deve ter pelo menos 8 caracteres');
+    }
+    
+    if (!/[A-Z]/.test(password)) {
+      throw new Error('A senha deve conter pelo menos uma letra maiúscula');
+    }
+    
+    if (!/[a-z]/.test(password)) {
+      throw new Error('A senha deve conter pelo menos uma letra minúscula');
+    }
+    
+    if (!/\d/.test(password)) {
+      throw new Error('A senha deve conter pelo menos um número');
+    }
+    
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+      throw new Error('A senha deve conter pelo menos um caractere especial (!@#$%^&*()_+-=[]{}|;:,.<>?)');
     }
 
     // Verificar se o email já existe

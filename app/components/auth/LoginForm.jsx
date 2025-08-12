@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import Button from '../ui/Button';
+import Input from '../ui/Input';
 import { login, reactivateAccount } from '../../actions/auth';
 import { useNotification } from '../providers/NotificationProvider';
+import { getErrorMessage } from '../../utils/errorMessages';
 
 const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
   const [loading, setLoading] = useState(false);
@@ -36,7 +38,8 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
           showNotification('Erro: Email não encontrado no formulário', 'error');
         }
       } else {
-        showNotification(error.message, 'error');
+        const errorMessage = getErrorMessage(error, 'AUTHENTICATION');
+        showNotification(errorMessage, 'error');
       }
     } finally {
       setLoading(false);
@@ -96,11 +99,11 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
             <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
               Senha
             </label>
-            <input
+            <Input
               type="password"
               name="password"
               required
-              className="w-full px-4 py-3 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
+              className="w-full bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-white/20 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:ring-blue-500 dark:focus:ring-white/50"
               placeholder="••••••••"
             />
           </div>
@@ -159,11 +162,11 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }) => {
           <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
             Senha
           </label>
-          <input
+          <Input
             type="password"
             name="password"
             required
-            className="w-full px-4 py-3 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
+            className="w-full bg-gray-50 dark:bg-white/10 border-gray-300 dark:border-white/20 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:ring-blue-500 dark:focus:ring-white/50"
             placeholder="••••••••"
           />
         </div>

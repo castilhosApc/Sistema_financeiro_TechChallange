@@ -14,6 +14,7 @@ const ConfirmModal = ({
   cancelText = "Cancelar",
   variant = "danger",
   isLoading = false,
+  disabled = false,
   children
 }) => {
   const handleConfirm = async () => {
@@ -35,9 +36,18 @@ const ConfirmModal = ({
       }
       
       if (form) {
+        // Validar se o formulário tem dados válidos
         const formData = new FormData(form);
+        const hasData = Array.from(formData.entries()).some(([key, value]) => value && value.trim() !== '');
+        
+        if (!hasData) {
+          console.error('Formulário sem dados válidos');
+          return;
+        }
+        
         await onConfirm(formData);
       } else {
+        console.error('Formulário não encontrado no modal');
         // Tentar executar sem FormData
         await onConfirm();
       }
@@ -68,7 +78,7 @@ const ConfirmModal = ({
       <div className="bg-white dark:bg-gray-800">
         {children ? (
           // Render children if provided (for forms)
-          <div className="bg-white dark:bg-gray-800" data-modal-content>
+          <div className="bg-white dark:bg-gray-800 p-6" data-modal-content>
             {children}
             <div className="flex space-x-3 mt-6">
               <Button
@@ -84,7 +94,7 @@ const ConfirmModal = ({
                 onClick={handleConfirm}
                 variant={variant === 'destructive' ? 'destructive' : 'primary'}
                 className={`flex-1 ${getVariantStyles()}`}
-                disabled={isLoading}
+                disabled={isLoading || disabled}
               >
                 {isLoading ? 'Processando...' : confirmText}
               </Button>
@@ -117,7 +127,7 @@ const ConfirmModal = ({
                 onClick={handleConfirm}
                 variant={variant === 'destructive' ? 'destructive' : 'primary'}
                 className={`flex-1 ${getVariantStyles()}`}
-                disabled={isLoading}
+                disabled={isLoading || disabled}
               >
                 {isLoading ? 'Processando...' : confirmText}
               </Button>

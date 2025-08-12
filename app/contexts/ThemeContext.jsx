@@ -56,7 +56,11 @@ export const ThemeProvider = ({ children }) => {
 
   // Não renderizar nada até estar montado para evitar hidratação
   if (!mounted) {
-    return <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">{children}</div>;
+    return (
+      <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+        {children}
+      </div>
+    );
   }
 
   return (

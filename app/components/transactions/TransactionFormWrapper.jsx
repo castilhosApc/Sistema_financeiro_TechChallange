@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Modal from '../ui/Modal';
 import TransactionForm from './TransactionForm';
 import ClientOnly from '../ui/ClientOnly';
-import { useNotification } from '../providers/NotificationProvider';
+import { useFormMessages } from '../../hooks/useFormMessages';
 import { createTransaction, updateTransaction } from '../../actions/transactions';
 
 export default function TransactionFormWrapper({ 
@@ -14,7 +14,7 @@ export default function TransactionFormWrapper({
   title = transaction ? "Editar Transação" : "Nova Transação"
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { showNotification } = useNotification();
+  const { handleAsyncOperation } = useFormMessages();
 
   const handleSubmit = async (transactionData) => {
     try {
@@ -28,15 +28,18 @@ export default function TransactionFormWrapper({
       formData.append('contactId', transactionData.contactId || '');
 
       if (transaction) {
-        await updateTransaction(transaction.id, formData);
-        showNotification('Transação atualizada com sucesso!', 'success');
+        await handleAsyncOperation(async () => {
+          return await updateTransaction(transaction.id, formData);
+        });
       } else {
-        await createTransaction(formData);
-        showNotification('Transação criada com sucesso!', 'success');
+        await handleAsyncOperation(async () => {
+          return await createTransaction(formData);
+        });
       }
       setIsOpen(false);
     } catch (error) {
-      showNotification('Erro ao salvar transação: ' + error.message, 'error');
+      // Erro já é tratado pelo hook
+      console.error('Erro na transação:', error);
     }
   };
 

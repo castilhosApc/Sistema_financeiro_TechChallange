@@ -2,16 +2,19 @@
 
 import React, { useState } from 'react';
 import Button from './Button';
+import Input from './Input';
 import { findContactByPixKey, createContact } from '../../actions/contacts';
-import { useNotification } from '../providers/NotificationProvider';
+import { useFormMessages } from '../../hooks/useFormMessages';
+import ErrorAlert from './ErrorAlert';
+import SuccessAlert from './SuccessAlert';
 
 const PixContactSearch = ({ onContactSelect, onCancel }) => {
   const [pixKey, setPixKey] = useState('');
   const [pixKeyType, setPixKeyType] = useState('EMAIL');
-  const [loading, setLoading] = useState(false);
   const [foundContact, setFoundContact] = useState(null);
   const [showNewContactForm, setShowNewContactForm] = useState(false);
-  const { showNotification } = useNotification();
+  
+  const { message, isLoading, handleAsyncOperation, clearMessage } = useFormMessages('CONTACTS');
 
   const pixKeyTypes = [
     { value: 'EMAIL', label: 'E-mail' },
@@ -23,12 +26,10 @@ const PixContactSearch = ({ onContactSelect, onCancel }) => {
 
   const handleSearch = async () => {
     if (!pixKey.trim()) {
-      showNotification('Digite uma chave PIX', 'error');
       return;
     }
 
-    setLoading(true);
-    try {
+    await handleAsyncOperation(async () => {
       const contact = await findContactByPixKey(pixKey.trim());
       if (contact) {
         setFoundContact(contact);
@@ -37,21 +38,16 @@ const PixContactSearch = ({ onContactSelect, onCancel }) => {
         setFoundContact(null);
         setShowNewContactForm(true);
       }
-    } catch (error) {
-      showNotification('Erro ao buscar contato: ' + error.message, 'error');
-    } finally {
-      setLoading(false);
-    }
+      return { success: true, contact };
+    });
   };
 
   const handleCreateNewContact = async (formData) => {
-    try {
+    await handleAsyncOperation(async () => {
       const newContact = await createContact(formData);
-      showNotification('Contato criado com sucesso!', 'success');
       onContactSelect(newContact.contact);
-    } catch (error) {
-      showNotification('Erro ao criar contato: ' + error.message, 'error');
-    }
+      return { success: true, contact: newContact.contact };
+    });
   };
 
   const handleSelectContact = () => {
@@ -59,16 +55,34 @@ const PixContactSearch = ({ onContactSelect, onCancel }) => {
   };
 
   return (
-    <div className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
-          Buscar por Chave PIX
-        </label>
-        <div className="flex space-x-2">
+    <div className="space-y-6">
+      {/* Mensagens de erro ou sucesso */}
+      {message.type === 'error' && (
+        <ErrorAlert 
+          error={{ message: message.text }} 
+          context="CONTACTS"
+          onClose={clearMessage}
+        />
+      )}
+
+      {message.type === 'success' && (
+        <SuccessAlert 
+          message={message.text}
+          context="CONTACTS"
+          onClose={clearMessage}
+        />
+      )}
+
+      {/* Busca por chave PIX */}
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
+            Tipo de Chave PIX
+          </label>
           <select
             value={pixKeyType}
             onChange={(e) => setPixKeyType(e.target.value)}
-            className="px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
+            className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
           >
             {pixKeyTypes.map(type => (
               <option key={type.value} value={type.value}>
@@ -76,66 +90,76 @@ const PixContactSearch = ({ onContactSelect, onCancel }) => {
               </option>
             ))}
           </select>
-          <input
-            type="text"
-            value={pixKey}
-            onChange={(e) => setPixKey(e.target.value)}
-            placeholder="Digite a chave PIX"
-            className="flex-1 px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
-          />
-          <Button
-            onClick={handleSearch}
-            disabled={loading}
-            variant="primary"
-            size="sm"
-          >
-            {loading ? 'Buscando...' : 'Buscar'}
-          </Button>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-800 dark:text-white mb-2">
+            Chave PIX
+          </label>
+          <div className="flex space-x-3">
+            <Input
+              id="pixKey"
+              name="pixKey"
+              type="text"
+              value={pixKey}
+              onChange={(e) => setPixKey(e.target.value)}
+              placeholder={`Digite a ${pixKeyType.toLowerCase()}`}
+              className="flex-1"
+            />
+            <Button
+              onClick={handleSearch}
+              disabled={isLoading || !pixKey.trim()}
+              className="px-6 py-3"
+            >
+              {isLoading ? '🔍' : '🔍'}
+            </Button>
+          </div>
         </div>
       </div>
 
+      {/* Contato encontrado */}
       {foundContact && (
-        <div className="bg-green-100 dark:bg-green-500/20 border border-green-200 dark:border-green-500/30 rounded-lg p-4">
-          <h3 className="font-semibold text-green-800 dark:text-green-400 mb-2">Contato Encontrado</h3>
-          <div className="flex items-center space-x-3">
-            <img
-              src={foundContact.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'}
-              alt={foundContact.name}
-              className="w-10 h-10 rounded-full"
-            />
-            <div className="flex-1">
-              <p className="font-medium text-gray-900 dark:text-white">{foundContact.name}</p>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                {foundContact.pixKeyType}: {foundContact.pixKey}
-              </p>
-            </div>
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
+          <h3 className="font-medium text-green-800 dark:text-green-200 mb-3">
+            Contato Encontrado
+          </h3>
+          <div className="text-sm text-green-700 dark:text-green-300 mb-4">
+            <p><strong>Nome:</strong> {foundContact.name}</p>
+            {foundContact.email && <p><strong>E-mail:</strong> {foundContact.email}</p>}
+            {foundContact.phone && <p><strong>Telefone:</strong> {foundContact.phone}</p>}
+            {foundContact.pixKey && <p><strong>Chave PIX:</strong> {foundContact.pixKey}</p>}
+          </div>
+          <div className="flex space-x-3">
             <Button
               onClick={handleSelectContact}
               variant="primary"
               size="sm"
             >
-              Selecionar
+              Selecionar Contato
+            </Button>
+            <Button
+              onClick={() => setFoundContact(null)}
+              variant="outline"
+              size="sm"
+            >
+              Buscar Outro
             </Button>
           </div>
         </div>
       )}
 
+      {/* Formulário para novo contato */}
       {showNewContactForm && !foundContact && (
-        <div className="bg-blue-100 dark:bg-blue-500/20 border border-blue-200 dark:border-blue-500/30 rounded-lg p-4">
-          <h3 className="font-semibold text-blue-800 dark:text-blue-400 mb-2">Contato não encontrado</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-            Deseja cadastrar um novo contato com esta chave PIX?
-          </p>
-          <NewContactForm
-            pixKey={pixKey}
-            pixKeyType={pixKeyType}
-            onSubmit={handleCreateNewContact}
-            onCancel={() => setShowNewContactForm(false)}
-          />
-        </div>
+        <NewContactForm
+          pixKey={pixKey}
+          pixKeyType={pixKeyType}
+          onSubmit={handleCreateNewContact}
+          onCancel={() => setShowNewContactForm(false)}
+        />
       )}
 
-      <div className="flex space-x-2">
+      {/* Botão cancelar */}
+      <div className="flex justify-end pt-4">
         <Button
           onClick={onCancel}
           variant="outline"
@@ -157,81 +181,124 @@ const NewContactForm = ({ pixKey, pixKeyType, onSubmit, onCancel }) => {
     pixKeyType
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Nome é obrigatório';
+    }
+
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'E-mail inválido';
+    }
+
+    if (formData.phone && !/^\(\d{2}\) \d{5}-\d{4}$/.test(formData.phone)) {
+      newErrors.phone = 'Telefone deve estar no formato (11) 99999-9999';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (!validateForm()) return;
+
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      data.append(key, value);
+      if (value.trim()) {
+        data.append(key, value.trim());
+      }
     });
     onSubmit(data);
   };
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <div>
-        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
-          Nome *
-        </label>
-        <input
-          type="text"
+  const formatPhone = (value) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 11) {
+      const match = numbers.match(/^(\d{2})(\d{5})(\d{4})$/);
+      if (match) {
+        return `(${match[1]}) ${match[2]}-${match[3]}`;
+      }
+    }
+    return value;
+  };
+
+  const handlePhoneChange = (value) => {
+    const formatted = formatPhone(value);
+    handleChange('phone', formatted);
+  };
+
+           return (
+           <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+               Cadastrar Novo Contato
+             </h3>
+
+             <div className="space-y-4">
+        <Input
+          label="Nome *"
+          id="name"
+          name="name"
           value={formData.name}
           onChange={(e) => handleChange('name', e.target.value)}
           required
-          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
-          placeholder="Nome do contato"
+          placeholder="Nome completo do contato"
+          error={errors.name}
         />
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
-          E-mail
-        </label>
-        <input
+        <Input
+          label="E-mail"
+          id="email"
+          name="email"
           type="email"
           value={formData.email}
           onChange={(e) => handleChange('email', e.target.value)}
-          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
           placeholder="email@exemplo.com"
+          error={errors.email}
         />
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-800 dark:text-white mb-1">
-          Telefone
-        </label>
-        <input
+        <Input
+          label="Telefone"
+          id="phone"
+          name="phone"
           type="tel"
           value={formData.phone}
-          onChange={(e) => handleChange('phone', e.target.value)}
-          className="w-full px-3 py-2 bg-gray-50 dark:bg-white/10 border border-gray-300 dark:border-white/20 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-white/50"
+          onChange={(e) => handlePhoneChange(e.target.value)}
           placeholder="(11) 99999-9999"
+          error={errors.phone}
         />
-      </div>
 
-      <div className="flex space-x-2">
-        <Button
-          type="submit"
-          variant="primary"
-          size="sm"
-          className="flex-1"
-        >
-          Cadastrar
-        </Button>
-        <Button
-          type="button"
-          onClick={onCancel}
-          variant="outline"
-          size="sm"
-          className="flex-1"
-        >
-          Cancelar
-        </Button>
-      </div>
-    </form>
+                       <div className="flex space-x-3 pt-4">
+                 <Button
+                   type="button"
+                   onClick={handleSubmit}
+                   variant="primary"
+                   size="sm"
+                   className="flex-1"
+                 >
+                   Criar Contato
+                 </Button>
+                 <Button
+                   type="button"
+                   onClick={onCancel}
+                   variant="outline"
+                   size="sm"
+                   className="flex-1"
+                 >
+                   Cancelar
+                 </Button>
+               </div>
+             </div>
+           </div>
   );
 };
 

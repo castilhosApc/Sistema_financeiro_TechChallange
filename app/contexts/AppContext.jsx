@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import Notification from '../components/ui/Notification';
+import { getErrorMessage, getSuccessMessage } from '../utils/errorMessages';
 
 const AppContext = createContext();
 
@@ -153,7 +154,7 @@ export const AppProvider = ({ children }) => {
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
       setError('Falha ao carregar dados da aplicação');
-      showNotification('Erro ao carregar dados', 'error');
+      showNotification(getErrorMessage(error, 'APP_LOAD'), 'error');
     } finally {
       setLoading(false);
     }
@@ -170,10 +171,11 @@ export const AppProvider = ({ children }) => {
       };
 
       setTransactions(prev => [newTransaction, ...prev]);
-      showNotification('Transação criada com sucesso!', 'success');
+      showNotification(getSuccessMessage('TRANSACTION'), 'success');
       return newTransaction;
     } catch (error) {
-      showNotification(error.message || 'Erro ao criar transação', 'error');
+      const errorMessage = getErrorMessage(error, 'TRANSACTIONS');
+      showNotification(errorMessage, 'error');
       throw error;
     }
   };
@@ -189,10 +191,11 @@ export const AppProvider = ({ children }) => {
       setTransactions(prev => 
         prev.map(t => t.id === transactionId ? updatedTransaction : t)
       );
-      showNotification('Transação atualizada com sucesso!', 'success');
+      showNotification(getSuccessMessage('TRANSACTION_UPDATE'), 'success');
       return updatedTransaction;
     } catch (error) {
-      showNotification(error.message || 'Erro ao atualizar transação', 'error');
+      const errorMessage = getErrorMessage(error, 'TRANSACTIONS');
+      showNotification(errorMessage, 'error');
       throw error;
     }
   };
@@ -200,9 +203,10 @@ export const AppProvider = ({ children }) => {
   const deleteTransaction = async (transactionId) => {
     try {
       setTransactions(prev => prev.filter(t => t.id !== transactionId));
-      showNotification('Transação excluída com sucesso!', 'success');
+      showNotification(getSuccessMessage('TRANSACTION_DELETE'), 'success');
     } catch (error) {
-      showNotification(error.message || 'Erro ao excluir transação', 'error');
+      const errorMessage = getErrorMessage(error, 'TRANSACTIONS');
+      showNotification(errorMessage, 'error');
       throw error;
     }
   };
@@ -216,10 +220,11 @@ export const AppProvider = ({ children }) => {
       };
 
       setContacts(prev => [newContact, ...prev]);
-      showNotification('Contato criado com sucesso!', 'success');
+      showNotification(getSuccessMessage('CONTACT'), 'success');
       return newContact;
     } catch (error) {
-      showNotification(error.message || 'Erro ao criar contato', 'error');
+      const errorMessage = getErrorMessage(error, 'CONTACTS');
+      showNotification(errorMessage, 'error');
       throw error;
     }
   };
@@ -234,10 +239,11 @@ export const AppProvider = ({ children }) => {
       setContacts(prev => 
         prev.map(c => c.id === contactId ? updatedContact : c)
       );
-      showNotification('Contato atualizado com sucesso!', 'success');
+      showNotification(getSuccessMessage('CONTACT_UPDATE'), 'success');
       return updatedContact;
     } catch (error) {
-      showNotification(error.message || 'Erro ao atualizar contato', 'error');
+      const errorMessage = getErrorMessage(error, 'CONTACTS');
+      showNotification(errorMessage, 'error');
       throw error;
     }
   };
@@ -245,9 +251,10 @@ export const AppProvider = ({ children }) => {
   const deleteContact = async (contactId) => {
     try {
       setContacts(prev => prev.filter(c => c.id !== contactId));
-      showNotification('Contato excluído com sucesso!', 'success');
+      showNotification(getSuccessMessage('CONTACT_DELETE'), 'success');
     } catch (error) {
-      showNotification(error.message || 'Erro ao excluir contato', 'error');
+      const errorMessage = getErrorMessage(error, 'CONTACTS');
+      showNotification(errorMessage, 'error');
       throw error;
     }
   };

@@ -19,7 +19,7 @@ const ModalPortal = ({ children }) => {
   const portalContainer = document.body;
   
   return createPortal(
-    <div className="dark:bg-gray-900">
+    <div>
       {children}
     </div>,
     portalContainer

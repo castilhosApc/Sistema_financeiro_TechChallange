@@ -89,6 +89,7 @@ export async function updateUserPassword(formData) {
     const newPassword = formData.get('newPassword');
     const confirmPassword = formData.get('confirmPassword');
 
+    // Validações mais detalhadas
     if (!currentPassword || !newPassword || !confirmPassword) {
       throw new Error('Todos os campos são obrigatórios');
     }
@@ -97,14 +98,39 @@ export async function updateUserPassword(formData) {
       throw new Error('As novas senhas não coincidem');
     }
 
-    if (newPassword.length < 6) {
-      throw new Error('A nova senha deve ter pelo menos 6 caracteres');
+    // Validações mais robustas de senha
+    if (newPassword.length < 8) {
+      throw new Error('A nova senha deve ter pelo menos 8 caracteres');
+    }
+    
+    if (!/[A-Z]/.test(newPassword)) {
+      throw new Error('A nova senha deve conter pelo menos uma letra maiúscula');
+    }
+    
+    if (!/[a-z]/.test(newPassword)) {
+      throw new Error('A nova senha deve conter pelo menos uma letra minúscula');
+    }
+    
+    if (!/\d/.test(newPassword)) {
+      throw new Error('A nova senha deve conter pelo menos um número');
+    }
+    
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(newPassword)) {
+      throw new Error('A nova senha deve conter pelo menos um caractere especial (!@#$%^&*()_+-=[]{}|;:,.<>?)');
+    }
+
+    if (newPassword === currentPassword) {
+      throw new Error('A nova senha deve ser diferente da senha atual');
     }
 
     // Verificar senha atual
     const currentUser = await prisma.user.findUnique({
       where: { id: user.id }
     });
+
+    if (!currentUser) {
+      throw new Error('Usuário não encontrado no banco de dados');
+    }
 
     const isValidCurrentPassword = await bcrypt.compare(currentPassword, currentUser.password);
     if (!isValidCurrentPassword) {
@@ -121,7 +147,7 @@ export async function updateUserPassword(formData) {
     });
 
     revalidatePath('/');
-    return { success: true };
+    return { success: true, message: 'Senha alterada com sucesso' };
   } catch (error) {
     console.error('Erro ao alterar senha:', error);
     throw new Error(error.message || 'Falha ao alterar senha');
