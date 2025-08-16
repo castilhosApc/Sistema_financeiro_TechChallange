@@ -6,11 +6,17 @@ const Input = ({
   type = 'text', 
   error,
   className = '',
+  value = '',
+  onChange,
   ...props 
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === 'password';
   const inputType = isPassword && showPassword ? 'text' : type;
+
+  // Garantir que o input seja sempre controlado
+  const inputValue = value || '';
+  const handleChange = onChange || (() => {});
 
   return (
     <div className="mb-4">
@@ -27,6 +33,8 @@ const Input = ({
         <input
           id={id}
           type={inputType}
+          value={inputValue}
+          onChange={handleChange}
           className={`w-full px-4 py-3 border text-base text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 ${error ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400 transition-colors duration-200 ${className} ${isPassword ? 'pr-12' : ''}`}
           {...props}
         />

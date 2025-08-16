@@ -520,6 +520,8 @@ export default function UserProfileForm({ user }) {
                     type="password"
                     name="password"
                     required
+                    value=""
+                    onChange={() => {}}
                     className="w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
                   />
                 </div>
